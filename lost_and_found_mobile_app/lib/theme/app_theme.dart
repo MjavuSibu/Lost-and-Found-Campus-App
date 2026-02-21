@@ -57,7 +57,7 @@ abstract class AppTheme {
           fontWeight: FontWeight.w600,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -154,7 +154,7 @@ abstract class AppTheme {
         thickness: 1,
         space: 0,
       ),
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         labelColor: AppColors.cutGold,
         unselectedLabelColor: Colors.white54,
         indicatorColor: AppColors.cutGold,
