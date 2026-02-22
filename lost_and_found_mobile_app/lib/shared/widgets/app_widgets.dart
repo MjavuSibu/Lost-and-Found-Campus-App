@@ -215,18 +215,20 @@ class AppGoldButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final IconData? icon;
+  final bool isLoading;
 
   const AppGoldButton({
     super.key,
     required this.label,
     this.onTap,
     this.icon,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isLoading ? null : onTap,
       child: Container(
         height: 50,
         decoration: BoxDecoration(
@@ -241,16 +243,25 @@ class AppGoldButton extends StatelessWidget {
           ],
         ),
         child: Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (icon != null) ...[
-                Icon(icon, color: Colors.white, size: 18),
-                const SizedBox(width: 6),
-              ],
-              Text(label, style: AppTextStyles.buttonMedium),
-            ],
-          ),
+          child: isLoading
+              ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    valueColor: AlwaysStoppedAnimation(Colors.white),
+                  ),
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (icon != null) ...[
+                      Icon(icon, color: Colors.white, size: 18),
+                      const SizedBox(width: 6),
+                    ],
+                    Text(label, style: AppTextStyles.buttonMedium),
+                  ],
+                ),
         ),
       ),
     );
