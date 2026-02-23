@@ -8,9 +8,12 @@ final itemsProvider = StreamProvider<List<ItemModel>>((ref) {
   return FirebaseFirestore.instance
       .collection(AppConstants.colItems)
       .where('status', isEqualTo: AppConstants.statusOpen)
-      .orderBy('createdAt', descending: true)
       .snapshots()
-      .map((snap) => snap.docs.map(ItemModel.fromFirestore).toList());
+      .map((snap) {
+        final list = snap.docs.map(ItemModel.fromFirestore).toList();
+        list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        return list;
+      });
 });
 
 final filteredItemsProvider =
@@ -20,7 +23,10 @@ final filteredItemsProvider =
       .collection(AppConstants.colItems)
       .where('status', isEqualTo: AppConstants.statusOpen)
       .where('type', isEqualTo: type)
-      .orderBy('createdAt', descending: true)
       .snapshots()
-      .map((snap) => snap.docs.map(ItemModel.fromFirestore).toList());
+      .map((snap) {
+        final list = snap.docs.map(ItemModel.fromFirestore).toList();
+        list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        return list;
+      });
 });

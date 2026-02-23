@@ -30,10 +30,12 @@ class ConversationsScreen extends ConsumerWidget {
             valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
           ),
         ),
-        error: (_, __) => Center(
-          child: Text('Something went wrong.',
-              style: AppTextStyles.bodyMedium),
-        ),
+        error: (error, stack) {
+          debugPrint('Conversations error: $error');
+          return Center(
+            child: Text('$error', style: AppTextStyles.bodyMedium),
+          );
+        },
         data: (conversations) {
           if (conversations.isEmpty) {
             return EmptyState(
@@ -46,13 +48,11 @@ class ConversationsScreen extends ConsumerWidget {
           return ListView.separated(
             padding: const EdgeInsets.symmetric(vertical: 8),
             itemCount: conversations.length,
-            separatorBuilder: (_, __) =>
-                const Divider(height: 1, indent: 76),
+            separatorBuilder: (_, __) => const Divider(height: 1, indent: 76),
             itemBuilder: (context, i) {
               final convo = conversations[i];
-              final unread = currentUser != null
-                  ? convo.unreadFor(currentUser.userId)
-                  : 0;
+              final unread =
+                  currentUser != null ? convo.unreadFor(currentUser.userId) : 0;
               final otherName = currentUser != null
                   ? convo.otherName(currentUser.userId)
                   : '';
@@ -68,8 +68,8 @@ class ConversationsScreen extends ConsumerWidget {
                   : '?';
 
               return ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 6),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 onTap: () =>
                     context.push(AppRoutes.toChat(convo.conversationId)),
                 leading: UserAvatar(
@@ -115,9 +115,8 @@ class ConversationsScreen extends ConsumerWidget {
                     Text(
                       convo.lastMessage,
                       style: AppTextStyles.bodySmall.copyWith(
-                        fontWeight: unread > 0
-                            ? FontWeight.w600
-                            : FontWeight.w400,
+                        fontWeight:
+                            unread > 0 ? FontWeight.w600 : FontWeight.w400,
                         color: unread > 0
                             ? AppColors.textPrimary
                             : AppColors.textSecondary,
