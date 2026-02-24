@@ -9,14 +9,18 @@ final conversationsProvider =
     StreamProvider<List<ConversationModel>>((ref) {
   final uid = ref.watch(authStateProvider).valueOrNull?.uid;
   if (uid == null) return Stream.value([]);
-
   return FirebaseFirestore.instance
       .collection(AppConstants.colConversations)
       .where('participants', arrayContains: uid)
-      .orderBy('lastMessageAt', descending: true)
       .snapshots()
-      .map((snap) =>
-          snap.docs.map(ConversationModel.fromFirestore).toList());
+      .map((snap) {
+        final list = snap.docs
+            .map(ConversationModel.fromFirestore)
+            .toList();
+        list.sort((a, b) =>
+            b.lastMessageAt.compareTo(a.lastMessageAt));
+        return list;
+      });
 });
 
 final totalUnreadCountProvider = Provider<int>((ref) {
@@ -33,6 +37,8 @@ final totalUnreadCountProvider = Provider<int>((ref) {
 final messagesProvider =
     StreamProvider.family<List<MessageModel>, String>(
         (ref, conversationId) {
+  final uid = ref.watch(authStateProvider).valueOrNull?.uid;
+  if (uid == null) return Stream.value([]);
   return FirebaseFirestore.instance
       .collection(AppConstants.colConversations)
       .doc(conversationId)

@@ -18,10 +18,10 @@ final _allItemsProvider = StreamProvider<List<ItemModel>>((ref) {
       .collection(AppConstants.colItems)
       .snapshots()
       .map((snap) {
-        final list = snap.docs.map(ItemModel.fromFirestore).toList();
-        list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        return list;
-      });
+    final list = snap.docs.map(ItemModel.fromFirestore).toList();
+    list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return list;
+  });
 });
 
 final _allUsersProvider = StreamProvider<List<UserModel>>((ref) {
@@ -39,17 +39,16 @@ class AdminDashboardScreen extends ConsumerStatefulWidget {
       _AdminDashboardScreenState();
 }
 
-class _AdminDashboardScreenState
-    extends ConsumerState<AdminDashboardScreen> {
+class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   String _filterStatus = 'all';
-  int _selectedTab     = 0;
+  int _selectedTab = 0;
 
   Future<void> _updateStatus(String itemId, String status) async {
     await FirebaseFirestore.instance
         .collection(AppConstants.colItems)
         .doc(itemId)
         .update({
-      'status':    status,
+      'status': status,
       'updatedAt': FieldValue.serverTimestamp(),
     });
   }
@@ -78,8 +77,8 @@ class _AdminDashboardScreenState
             ),
             child: Text(
               'Delete',
-              style: AppTextStyles.labelLarge
-                  .copyWith(color: AppColors.lostRed),
+              style:
+                  AppTextStyles.labelLarge.copyWith(color: AppColors.lostRed),
             ),
           ),
         ],
@@ -96,7 +95,7 @@ class _AdminDashboardScreenState
   @override
   Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserProvider).valueOrNull;
-    final itemsAsync  = ref.watch(_allItemsProvider);
+    final itemsAsync = ref.watch(_allItemsProvider);
 
     if (currentUser == null || !currentUser.isAdmin) {
       return Scaffold(
@@ -105,8 +104,7 @@ class _AdminDashboardScreenState
           child: EmptyState(
             icon: Icons.lock_outline_rounded,
             title: 'Access Denied',
-            subtitle:
-                'You do not have permission to view this page.',
+            subtitle: 'You do not have permission to view this page.',
           ),
         ),
       );
@@ -151,14 +149,11 @@ class _AdminDashboardScreenState
     return GestureDetector(
       onTap: () => setState(() => _selectedTab = index),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 24, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: isActive
-                  ? AppColors.cutGold
-                  : Colors.transparent,
+              color: isActive ? AppColors.cutGold : Colors.transparent,
               width: 3,
             ),
           ),
@@ -166,9 +161,7 @@ class _AdminDashboardScreenState
         child: Text(
           label,
           style: AppTextStyles.labelLarge.copyWith(
-            color: isActive
-                ? AppColors.cutBlue
-                : AppColors.textMuted,
+            color: isActive ? AppColors.cutBlue : AppColors.textMuted,
           ),
         ),
       ),
@@ -184,20 +177,16 @@ class _AdminDashboardScreenState
           child: itemsAsync.when(
             loading: () => const Center(
               child: CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation(AppColors.cutBlue),
+                valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
               ),
             ),
-            error: (_, __) => Center(
-              child: Text('Something went wrong.',
-                  style: AppTextStyles.bodyMedium),
+            error: (e, __) => Center(
+              child: Text('$e', style: AppTextStyles.bodyMedium),
             ),
             data: (items) {
               final filtered = _filterStatus == 'all'
                   ? items
-                  : items
-                      .where((i) => i.status == _filterStatus)
-                      .toList();
+                  : items.where((i) => i.status == _filterStatus).toList();
               if (filtered.isEmpty) {
                 return EmptyState(
                   icon: Icons.inbox_outlined,
@@ -206,19 +195,16 @@ class _AdminDashboardScreenState
                 );
               }
               return ListView.separated(
-                padding:
-                    const EdgeInsets.fromLTRB(16, 8, 16, 40),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
                 itemCount: filtered.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(height: 10),
+                separatorBuilder: (_, __) => const SizedBox(height: 10),
                 itemBuilder: (context, i) => _AdminItemCard(
                   item: filtered[i],
                   onStatusChange: (status) =>
                       _updateStatus(filtered[i].itemId, status),
-                  onDelete: () =>
-                      _deleteItem(filtered[i].itemId),
-                  onTap: () => context.push(
-                      AppRoutes.toItemDetail(filtered[i].itemId)),
+                  onDelete: () => _deleteItem(filtered[i].itemId),
+                  onTap: () =>
+                      context.push(AppRoutes.toItemDetail(filtered[i].itemId)),
                 ),
               );
             },
@@ -237,8 +223,7 @@ class _AdminDashboardScreenState
         ),
       ),
       error: (_, __) => Center(
-        child: Text('Something went wrong.',
-            style: AppTextStyles.bodyMedium),
+        child: Text('Something went wrong.', style: AppTextStyles.bodyMedium),
       ),
       data: (users) {
         if (users.isEmpty) {
@@ -251,19 +236,17 @@ class _AdminDashboardScreenState
         return ListView.separated(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
           itemCount: users.length,
-          separatorBuilder: (_, __) =>
-              const SizedBox(height: 10),
-          itemBuilder: (context, i) =>
-              _UserCard(user: users[i]),
+          separatorBuilder: (_, __) => const SizedBox(height: 10),
+          itemBuilder: (context, i) => _UserCard(user: users[i]),
         );
       },
     );
   }
 
   Widget _buildSummaryRow(List<ItemModel> items) {
-    final open     = items.where((i) => i.isOpen).length;
-    final lost     = items.where((i) => i.isLost).length;
-    final found    = items.where((i) => i.isFound).length;
+    final open = items.where((i) => i.isOpen).length;
+    final lost = items.where((i) => i.isLost).length;
+    final found = items.where((i) => i.isFound).length;
     final resolved = items.where((i) => i.isResolved).length;
 
     return Container(
@@ -301,9 +284,9 @@ class _AdminDashboardScreenState
 
   Widget _buildStatusFilter() {
     const filters = [
-      {'id': 'all',      'label': 'All'},
-      {'id': 'open',     'label': 'Open'},
-      {'id': 'claimed',  'label': 'Claimed'},
+      {'id': 'all', 'label': 'All'},
+      {'id': 'open', 'label': 'Open'},
+      {'id': 'claimed', 'label': 'Claimed'},
       {'id': 'resolved', 'label': 'Resolved'},
       {'id': 'archived', 'label': 'Archived'},
     ];
@@ -317,29 +300,21 @@ class _AdminDashboardScreenState
         children: filters.map((f) {
           final isActive = _filterStatus == f['id'];
           return GestureDetector(
-            onTap: () =>
-                setState(() => _filterStatus = f['id']!),
+            onTap: () => setState(() => _filterStatus = f['id']!),
             child: Container(
               margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 14, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
               decoration: BoxDecoration(
-                color: isActive
-                    ? AppColors.cutBlue
-                    : AppColors.surface3,
+                color: isActive ? AppColors.cutBlue : AppColors.surface3,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isActive
-                      ? AppColors.cutBlue
-                      : AppColors.border,
+                  color: isActive ? AppColors.cutBlue : AppColors.border,
                 ),
               ),
               child: Text(
                 f['label']!,
                 style: AppTextStyles.labelMedium.copyWith(
-                  color: isActive
-                      ? Colors.white
-                      : AppColors.textSecondary,
+                  color: isActive ? Colors.white : AppColors.textSecondary,
                 ),
               ),
             ),
@@ -374,8 +349,7 @@ class _SummaryCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(value,
-                style: AppTextStyles.h1.copyWith(color: color)),
+            Text(value, style: AppTextStyles.h1.copyWith(color: color)),
             Text(label, style: AppTextStyles.caption),
           ],
         ),
@@ -442,8 +416,7 @@ class _AdminItemCard extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            ItemTypeBadge(
-                                type: item.type, small: true),
+                            ItemTypeBadge(type: item.type, small: true),
                             const SizedBox(width: 6),
                             StatusBadge(status: item.status),
                           ],
@@ -459,15 +432,13 @@ class _AdminItemCard extends StatelessWidget {
                         Row(
                           children: [
                             const Icon(Icons.person_outline_rounded,
-                                size: 12,
-                                color: AppColors.textMuted),
+                                size: 12, color: AppColors.textMuted),
                             const SizedBox(width: 4),
                             Text(item.reporterName,
                                 style: AppTextStyles.caption),
                             const SizedBox(width: 8),
                             const Icon(Icons.access_time_rounded,
-                                size: 12,
-                                color: AppColors.textMuted),
+                                size: 12, color: AppColors.textMuted),
                             const SizedBox(width: 4),
                             Text(timeago.format(item.createdAt),
                                 style: AppTextStyles.caption),
@@ -482,8 +453,7 @@ class _AdminItemCard extends StatelessWidget {
           ),
           Container(
             decoration: const BoxDecoration(
-              border: Border(
-                  top: BorderSide(color: AppColors.border)),
+              border: Border(top: BorderSide(color: AppColors.border)),
             ),
             child: Row(
               children: [
@@ -491,24 +461,16 @@ class _AdminItemCard extends StatelessWidget {
                   label: 'Archive',
                   icon: Icons.archive_outlined,
                   color: AppColors.textMuted,
-                  onTap: () => onStatusChange(
-                      AppConstants.statusArchived),
+                  onTap: () => onStatusChange(AppConstants.statusArchived),
                 ),
-                Container(
-                    width: 1,
-                    height: 36,
-                    color: AppColors.border),
+                Container(width: 1, height: 36, color: AppColors.border),
                 _actionButton(
                   label: 'Resolve',
                   icon: Icons.check_circle_outline_rounded,
                   color: AppColors.foundGreen,
-                  onTap: () => onStatusChange(
-                      AppConstants.statusResolved),
+                  onTap: () => onStatusChange(AppConstants.statusResolved),
                 ),
-                Container(
-                    width: 1,
-                    height: 36,
-                    color: AppColors.border),
+                Container(width: 1, height: 36, color: AppColors.border),
                 _actionButton(
                   label: 'Delete',
                   icon: Icons.delete_outline_rounded,
@@ -541,8 +503,7 @@ class _AdminItemCard extends StatelessWidget {
               const SizedBox(width: 5),
               Text(
                 label,
-                style: AppTextStyles.labelLarge
-                    .copyWith(color: color),
+                style: AppTextStyles.labelLarge.copyWith(color: color),
               ),
             ],
           ),
@@ -556,8 +517,7 @@ class _UserCard extends StatelessWidget {
   final UserModel user;
   const _UserCard({required this.user});
 
-  Future<void> _changeRole(
-      BuildContext context, String newRole) async {
+  Future<void> _changeRole(BuildContext context, String newRole) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -578,8 +538,8 @@ class _UserCard extends StatelessWidget {
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               'Confirm',
-              style: AppTextStyles.labelLarge
-                  .copyWith(color: AppColors.cutBlue),
+              style:
+                  AppTextStyles.labelLarge.copyWith(color: AppColors.cutBlue),
             ),
           ),
         ],
@@ -628,28 +588,24 @@ class _UserCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 10, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: _roleBg(user.role),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                    color: _roleColor(user.role)),
+                border: Border.all(color: _roleColor(user.role)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    user.role[0].toUpperCase() +
-                        user.role.substring(1),
+                    user.role[0].toUpperCase() + user.role.substring(1),
                     style: AppTextStyles.labelMedium.copyWith(
                       color: _roleColor(user.role),
                     ),
                   ),
                   const SizedBox(width: 4),
                   Icon(Icons.arrow_drop_down_rounded,
-                      size: 16,
-                      color: _roleColor(user.role)),
+                      size: 16, color: _roleColor(user.role)),
                 ],
               ),
             ),
@@ -675,17 +631,23 @@ class _UserCard extends StatelessWidget {
 
   Color _roleColor(String role) {
     switch (role) {
-      case AppConstants.roleAdmin:    return AppColors.cutBlue;
-      case AppConstants.roleSecurity: return AppColors.foundGreen;
-      default:                        return AppColors.textSecondary;
+      case AppConstants.roleAdmin:
+        return AppColors.cutBlue;
+      case AppConstants.roleSecurity:
+        return AppColors.foundGreen;
+      default:
+        return AppColors.textSecondary;
     }
   }
 
   Color _roleBg(String role) {
     switch (role) {
-      case AppConstants.roleAdmin:    return AppColors.surface3;
-      case AppConstants.roleSecurity: return AppColors.foundGreenBg;
-      default:                        return AppColors.surface3;
+      case AppConstants.roleAdmin:
+        return AppColors.surface3;
+      case AppConstants.roleSecurity:
+        return AppColors.foundGreenBg;
+      default:
+        return AppColors.surface3;
     }
   }
 }

@@ -16,6 +16,8 @@ import '../../../shared/services/notification_service.dart';
 
 final _itemDetailProvider =
     StreamProvider.family<ItemModel?, String>((ref, itemId) {
+  final uid = ref.watch(authStateProvider).valueOrNull?.uid;
+  if (uid == null) return Stream.value(null);
   return FirebaseFirestore.instance
       .collection(AppConstants.colItems)
       .doc(itemId)
@@ -33,8 +35,8 @@ class ItemDetailScreen extends ConsumerStatefulWidget {
 
 class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
   bool _showClaimSheet = false;
-  final _claimCtrl     = TextEditingController();
-  bool _submitting     = false;
+  final _claimCtrl = TextEditingController();
+  bool _submitting = false;
 
   @override
   void dispose() {
@@ -50,7 +52,8 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
               style: AppTextStyles.bodySmall.copyWith(color: Colors.white)),
           backgroundColor: AppColors.lostRed,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           margin: const EdgeInsets.all(16),
         ),
       );
@@ -62,53 +65,55 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
       final user = ref.read(currentUserProvider).valueOrNull;
       if (user == null) return;
 
-      final conversationId =
-          '${item.itemId}_${user.userId}';
+      final conversationId = '${item.itemId}_${user.userId}';
 
       final convoRef = FirebaseFirestore.instance
           .collection(AppConstants.colConversations)
           .doc(conversationId);
 
       final convoSnap = await convoRef.get();
-     if (!convoSnap.exists) {
+      if (!convoSnap.exists) {
         await convoRef.set({
-          'itemId':    item.itemId,
+          'itemId': item.itemId,
           'itemTitle': item.title,
-          'itemType':  item.type,
-          'participants':     [item.reportedBy, user.userId],
+          'itemType': item.type,
+          'participants': [item.reportedBy, user.userId],
           'participantNames': {
             item.reportedBy: item.reporterName,
-            user.userId:     user.displayName,
+            user.userId: user.displayName,
           },
-          'lastMessage':   _claimCtrl.text.trim(),
+          'lastMessage': _claimCtrl.text.trim(),
           'lastMessageAt': FieldValue.serverTimestamp(),
           'unreadCount': {
             item.reportedBy: 1,
-            user.userId:     0,
+            user.userId: 0,
           },
           'isResolved': false,
         });
 
-        await convoRef
-            .collection(AppConstants.colMessages)
-            .add({
-          'senderId':   user.userId,
+        await convoRef.collection(AppConstants.colMessages).add({
+          'senderId': user.userId,
           'senderName': user.displayName,
-          'text':       _claimCtrl.text.trim(),
-          'sentAt':     FieldValue.serverTimestamp(),
-          'readAt':     null,
+          'text': _claimCtrl.text.trim(),
+          'sentAt': FieldValue.serverTimestamp(),
+          'readAt': null,
         });
 
-        await NotificationService.sendNotification(
-          toUserId:       item.reportedBy,
-          title:          item.isLost
-              ? '${user.displayName} found your item'
-              : '${user.displayName} is claiming your item',
-          body:           _claimCtrl.text.trim(),
-          type:           'claim',
-          itemId:         item.itemId,
-          conversationId: conversationId,
-        );
+        try {
+          await NotificationService.sendNotification(
+            toUserId: item.reportedBy,
+            title: item.isLost
+                ? '${user.displayName} found your item'
+                : '${user.displayName} is claiming your item',
+            body: _claimCtrl.text.trim(),
+            type: 'claim',
+            itemId: item.itemId,
+            conversationId: conversationId,
+          );
+          debugPrint('Notification sent successfully');
+        } catch (e) {
+          debugPrint('Notification error: $e');
+        }
       }
 
       if (!mounted) return;
@@ -231,10 +236,8 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
                           const SizedBox(height: 12),
                           Text(item.title, style: AppTextStyles.displayMedium),
                           const SizedBox(height: 16),
-
                           _reporterCard(item),
                           const SizedBox(height: 20),
-
                           _infoRow(
                             Icons.location_on_outlined,
                             'Location',
@@ -257,7 +260,6 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
                             ),
                           ],
                           const SizedBox(height: 20),
-
                           Text('Description', style: AppTextStyles.h3),
                           const SizedBox(height: 8),
                           Text(
@@ -273,7 +275,6 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
                   ),
                 ],
               ),
-
               if (!isOwner && item.isOpen)
                 Positioned(
                   bottom: 0,
@@ -310,19 +311,16 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: AppGoldButton(
-                            label: item.isLost
-                                ? 'I Found This'
-                                : 'This Is Mine',
+                            label:
+                                item.isLost ? 'I Found This' : 'This Is Mine',
                             icon: Icons.back_hand_outlined,
-                            onTap: () =>
-                                setState(() => _showClaimSheet = true),
+                            onTap: () => setState(() => _showClaimSheet = true),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-
               if (_showClaimSheet) _buildClaimSheet(item),
             ],
           ),
@@ -399,8 +397,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
               ),
               decoration: const BoxDecoration(
                 color: AppColors.surface,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -464,8 +461,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
                       Expanded(
                         child: AppOutlineButton(
                           label: 'Cancel',
-                          onTap: () =>
-                              setState(() => _showClaimSheet = false),
+                          onTap: () => setState(() => _showClaimSheet = false),
                         ),
                       ),
                       const SizedBox(width: 12),

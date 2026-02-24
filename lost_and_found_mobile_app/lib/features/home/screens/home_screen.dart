@@ -162,7 +162,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
                 error: (e, __) => Center(
-                  child: Text('Something went wrong',
+                  child: Text('$e',
                       style: AppTextStyles.bodyMedium),
                 ),
               ),

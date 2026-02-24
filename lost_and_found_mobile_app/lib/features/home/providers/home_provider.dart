@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../models/item_model.dart';
 import '../../../shared/constants/app_constants.dart';
+import '../../auth/providers/auth_provider.dart';
 
 final itemsProvider = StreamProvider<List<ItemModel>>((ref) {
+  final uid = ref.watch(authStateProvider).valueOrNull?.uid;
+  if (uid == null) return Stream.value([]);
   return FirebaseFirestore.instance
       .collection(AppConstants.colItems)
       .where('status', isEqualTo: AppConstants.statusOpen)
@@ -18,6 +21,8 @@ final itemsProvider = StreamProvider<List<ItemModel>>((ref) {
 
 final filteredItemsProvider =
     StreamProvider.family<List<ItemModel>, String>((ref, type) {
+  final uid = ref.watch(authStateProvider).valueOrNull?.uid;
+  if (uid == null) return Stream.value([]);
   if (type == 'all') return ref.watch(itemsProvider.stream);
   return FirebaseFirestore.instance
       .collection(AppConstants.colItems)
