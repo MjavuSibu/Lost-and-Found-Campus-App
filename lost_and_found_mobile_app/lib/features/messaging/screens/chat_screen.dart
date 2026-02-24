@@ -12,6 +12,8 @@ import '../../../theme/app_colors.dart';
 import '../../../theme/app_text_styles.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../providers/messaging_provider.dart';
+import '../../../shared/services/notification_service.dart';
+
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String conversationId;
@@ -88,6 +90,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         'lastMessageAt': FieldValue.serverTimestamp(),
         'unreadCount':   unreadCount,
       });
+
+      for (final uid in participants) {
+        if (uid != user.userId) {
+          await NotificationService.sendNotification(
+            toUserId:       uid,
+            title:          'New message from ${user.displayName}',
+            body:           text,
+            type:           'message',
+            conversationId: widget.conversationId,
+          );
+        }
+      }
 
       _scrollToBottom();
     } finally {

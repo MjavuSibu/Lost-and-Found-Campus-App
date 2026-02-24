@@ -37,14 +37,16 @@ class SearchScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
-  final _searchCtrl = TextEditingController();
-  String _query         = '';
-  String _activeType    = 'all';
+  final _searchCtrl      = TextEditingController();
+  final _focusNode       = FocusNode();
+  String _query          = '';
+  String _activeType     = 'all';
   String _activeCategory = 'all';
 
   @override
   void dispose() {
     _searchCtrl.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -72,7 +74,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
             child: TextField(
               controller: _searchCtrl,
-              autofocus: true,
+              focusNode: _focusNode,
               style: AppTextStyles.bodyLarge.copyWith(
                 color: Colors.white,
               ),
@@ -106,72 +108,77 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         onPressed: () {
                           _searchCtrl.clear();
                           setState(() => _query = '');
+                          _focusNode.unfocus();
                         },
                       )
                     : null,
               ),
-              onChanged: (val) =>
-                  setState(() => _query = val),
+              onChanged: (val) => setState(() => _query = val),
+              onSubmitted: (_) => _focusNode.unfocus(),
             ),
           ),
         ),
       ),
-      body: Column(
-        children: [
-          _buildTypeFilter(),
-          _buildCategoryFilter(),
-          Expanded(
-            child: _query.isEmpty
-                ? _buildEmptyPrompt()
-                : resultsAsync.when(
-                    loading: () => const Center(
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation(AppColors.cutBlue),
+      body: GestureDetector(
+        onTap: () => _focusNode.unfocus(),
+        child: Column(
+          children: [
+            _buildTypeFilter(),
+            _buildCategoryFilter(),
+            Expanded(
+              child: _query.isEmpty
+                  ? _buildEmptyPrompt()
+                  : resultsAsync.when(
+                      loading: () => const Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation(AppColors.cutBlue),
+                        ),
                       ),
-                    ),
-                    error: (_, __) => Center(
-                      child: Text('Something went wrong.',
-                          style: AppTextStyles.bodyMedium),
-                    ),
-                    data: (items) {
-                      final filtered = _applyFilters(items);
-                      if (filtered.isEmpty) {
-                        return EmptyState(
-                          icon: Icons.search_off_rounded,
-                          title: 'No results found',
-                          subtitle:
-                              'Try different keywords or adjust your filters.',
-                        );
-                      }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                16, 12, 16, 4),
-                            child: Text(
-                              '${filtered.length} result${filtered.length == 1 ? '' : 's'} for "$_query"',
-                              style: AppTextStyles.labelLarge,
-                            ),
-                          ),
-                          Expanded(
-                            child: ListView.separated(
+                      error: (_, __) => Center(
+                        child: Text('Something went wrong.',
+                            style: AppTextStyles.bodyMedium),
+                      ),
+                      data: (items) {
+                        final filtered = _applyFilters(items);
+                        if (filtered.isEmpty) {
+                          return EmptyState(
+                            icon: Icons.search_off_rounded,
+                            title: 'No results found',
+                            subtitle:
+                                'Try different keywords or adjust your filters.',
+                          );
+                        }
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
                               padding: const EdgeInsets.fromLTRB(
-                                  16, 8, 16, 40),
-                              itemCount: filtered.length,
-                              separatorBuilder: (_, __) =>
-                                  const SizedBox(height: 10),
-                              itemBuilder: (context, i) =>
-                                  _SearchResultCard(item: filtered[i]),
+                                  16, 12, 16, 4),
+                              child: Text(
+                                '${filtered.length} result${filtered.length == 1 ? '' : 's'} for "$_query"',
+                                style: AppTextStyles.labelLarge,
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-          ),
-        ],
+                            Expanded(
+                              child: ListView.separated(
+                                padding: const EdgeInsets.fromLTRB(
+                                    16, 8, 16, 40),
+                                itemCount: filtered.length,
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(height: 10),
+                                itemBuilder: (context, i) =>
+                                    _SearchResultCard(
+                                        item: filtered[i]),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -185,7 +192,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return Container(
       height: 44,
       color: AppColors.surface,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: types.map((t) {
           final isActive = _activeType == t['id'];
@@ -196,11 +204,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               padding: const EdgeInsets.symmetric(
                   horizontal: 14, vertical: 4),
               decoration: BoxDecoration(
-                color: isActive ? AppColors.cutBlue : AppColors.surface3,
+                color: isActive
+                    ? AppColors.cutBlue
+                    : AppColors.surface3,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color:
-                      isActive ? AppColors.cutBlue : AppColors.border,
+                  color: isActive
+                      ? AppColors.cutBlue
+                      : AppColors.border,
                 ),
               ),
               child: Text(

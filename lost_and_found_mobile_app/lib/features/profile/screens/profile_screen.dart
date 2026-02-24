@@ -19,10 +19,10 @@ final _myItemsProvider = StreamProvider<List<ItemModel>>((ref) {
       .where('reportedBy', isEqualTo: uid)
       .snapshots()
       .map((snap) {
-        final list = snap.docs.map(ItemModel.fromFirestore).toList();
-        list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        return list;
-      });
+    final list = snap.docs.map(ItemModel.fromFirestore).toList();
+    list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return list;
+  });
 });
 
 class ProfileScreen extends ConsumerWidget {
@@ -30,7 +30,7 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentUser  = ref.watch(currentUserProvider).valueOrNull;
+    final currentUser = ref.watch(currentUserProvider).valueOrNull;
     final myItemsAsync = ref.watch(_myItemsProvider);
 
     if (currentUser == null) {
@@ -53,44 +53,44 @@ class ProfileScreen extends ConsumerWidget {
             backgroundColor: AppColors.cutBlue,
             actions: [
               IconButton(
-  icon: const Icon(Icons.logout_rounded),
-  onPressed: () async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: Text('Log Out', style: AppTextStyles.h2),
-        content: Text(
-          'Are you sure you want to log out?',
-          style: AppTextStyles.bodyMedium,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.lostRed,
-            ),
-            child: Text(
-              'Log Out',
-              style: AppTextStyles.labelLarge.copyWith(
-                color: AppColors.lostRed,
+                icon: const Icon(Icons.logout_rounded),
+                onPressed: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      title: Text('Log Out', style: AppTextStyles.h2),
+                      content: Text(
+                        'Are you sure you want to log out?',
+                        style: AppTextStyles.bodyMedium,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.lostRed,
+                          ),
+                          child: Text(
+                            'Log Out',
+                            style: AppTextStyles.labelLarge.copyWith(
+                              color: AppColors.lostRed,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmed == true) {
+                    await ref.read(authNotifierProvider.notifier).logout();
+                  }
+                },
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-    if (confirmed == true) {
-      await ref.read(authNotifierProvider.notifier).logout();
-    }
-  },
-),
             ],
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
@@ -135,10 +135,20 @@ class ProfileScreen extends ConsumerWidget {
             child: Column(
               children: [
                 const SizedBox(height: 16),
-                _buildStatsRow(currentUser.totalPosted,
-                    currentUser.totalResolved),
+                _buildStatsRow(
+                    currentUser.totalPosted, currentUser.totalResolved),
                 const SizedBox(height: 16),
                 _buildInfoCard(currentUser.studentNumber, currentUser.role),
+                const SizedBox(height: 16),
+                if (currentUser.isAdmin)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: AppOutlineButton(
+                      label: 'Admin Dashboard',
+                      icon: Icons.admin_panel_settings_outlined,
+                      onTap: () => context.push(AppRoutes.admin),
+                    ),
+                  ),
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -158,8 +168,7 @@ class ProfileScreen extends ConsumerWidget {
                 child: Padding(
                   padding: EdgeInsets.all(32),
                   child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation(AppColors.cutBlue),
+                    valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
                   ),
                 ),
               ),
@@ -176,8 +185,7 @@ class ProfileScreen extends ConsumerWidget {
                   child: EmptyState(
                     icon: Icons.inbox_outlined,
                     title: 'No posts yet',
-                    subtitle:
-                        'Items you report will appear here.',
+                    subtitle: 'Items you report will appear here.',
                     buttonLabel: 'Post an Item',
                     onButton: () => context.push(AppRoutes.post),
                   ),
@@ -313,8 +321,7 @@ class _StatCard extends StatelessWidget {
         children: [
           Icon(icon, size: 22, color: color),
           const SizedBox(height: 6),
-          Text(value,
-              style: AppTextStyles.h1.copyWith(color: color)),
+          Text(value, style: AppTextStyles.h1.copyWith(color: color)),
           const SizedBox(height: 2),
           Text(label, style: AppTextStyles.caption),
         ],
@@ -348,17 +355,14 @@ class _MyItemCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: item.isLost
-                    ? AppColors.lostRedBg
-                    : AppColors.foundGreenBg,
+                color:
+                    item.isLost ? AppColors.lostRedBg : AppColors.foundGreenBg,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 cat.icon,
                 size: 24,
-                color: item.isLost
-                    ? AppColors.lostRed
-                    : AppColors.foundGreen,
+                color: item.isLost ? AppColors.lostRed : AppColors.foundGreen,
               ),
             ),
             const SizedBox(width: 12),
@@ -390,8 +394,7 @@ class _MyItemCard extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded,
-                color: AppColors.textMuted),
+            const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
           ],
         ),
       ),

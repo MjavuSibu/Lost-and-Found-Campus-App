@@ -12,6 +12,7 @@ import '../../../shared/widgets/app_widgets.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_text_styles.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../../shared/services/notification_service.dart';
 
 final _itemDetailProvider =
     StreamProvider.family<ItemModel?, String>((ref, itemId) {
@@ -69,7 +70,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
           .doc(conversationId);
 
       final convoSnap = await convoRef.get();
-      if (!convoSnap.exists) {
+     if (!convoSnap.exists) {
         await convoRef.set({
           'itemId':    item.itemId,
           'itemTitle': item.title,
@@ -97,6 +98,17 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
           'sentAt':     FieldValue.serverTimestamp(),
           'readAt':     null,
         });
+
+        await NotificationService.sendNotification(
+          toUserId:       item.reportedBy,
+          title:          item.isLost
+              ? '${user.displayName} found your item'
+              : '${user.displayName} is claiming your item',
+          body:           _claimCtrl.text.trim(),
+          type:           'claim',
+          itemId:         item.itemId,
+          conversationId: conversationId,
+        );
       }
 
       if (!mounted) return;

@@ -69,7 +69,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             style: AppTextStyles.bodySmall.copyWith(color: Colors.white)),
         backgroundColor: AppColors.lostRed,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.all(16),
       ),
     );
@@ -82,9 +83,61 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             style: AppTextStyles.bodySmall.copyWith(color: Colors.white)),
         backgroundColor: AppColors.foundGreen,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.all(16),
       ),
+    );
+  }
+
+  Widget _buildQuickLogin() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Expanded(child: Divider()),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                'QUICK LOGIN',
+                style: AppTextStyles.overline,
+              ),
+            ),
+            const Expanded(child: Divider()),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _QuickLoginChip(
+                label: 'Admin',
+                icon: Icons.admin_panel_settings_outlined,
+                color: AppColors.cutBlue,
+                bg: AppColors.surface3,
+                onTap: () {
+                  _emailCtrl.text = 'admin@cut.ac.za';
+                  _passCtrl.text  = 'admin123456';
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _QuickLoginChip(
+                label: 'Student',
+                icon: Icons.school_outlined,
+                color: AppColors.foundGreen,
+                bg: AppColors.foundGreenBg,
+                onTap: () {
+                  _emailCtrl.text = 'student@student.cut.ac.za';
+                  _passCtrl.text  = 'student123456';
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -222,8 +275,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         onFieldSubmitted: (_) => _submit(),
                         decoration: InputDecoration(
                           hintText: 'Enter your password',
-                          prefixIcon: const Icon(Icons.lock_outline_rounded,
-                              size: 20, color: AppColors.textMuted),
+                          prefixIcon: const Icon(
+                              Icons.lock_outline_rounded,
+                              size: 20,
+                              color: AppColors.textMuted),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscure
@@ -251,7 +306,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                             minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            tapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
                           ),
                           child: const Text('Forgot password?'),
                         ),
@@ -284,7 +340,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 20),
+                      _buildQuickLogin(),
+                      const SizedBox(height: 16),
                       Center(
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -306,6 +364,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _QuickLoginChip extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final Color bg;
+  final VoidCallback onTap;
+
+  const _QuickLoginChip({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.bg,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            vertical: 10, horizontal: 14),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: AppTextStyles.labelLarge.copyWith(color: color),
+            ),
+          ],
+        ),
       ),
     );
   }
