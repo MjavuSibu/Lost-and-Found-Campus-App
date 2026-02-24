@@ -8,8 +8,8 @@ abstract class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.cutBlue,
-        primary: AppColors.cutBlue,
+        seedColor: AppColors.cutSage,
+        primary: AppColors.cutSage,
         secondary: AppColors.cutGold,
         surface: AppColors.surface,
         error: AppColors.lostRed,
@@ -21,7 +21,7 @@ abstract class AppTheme {
       scaffoldBackgroundColor: AppColors.background,
       fontFamily: 'Outfit',
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.cutBlue,
+        backgroundColor: AppColors.cutSage,
         foregroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -42,7 +42,7 @@ abstract class AppTheme {
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.cutBlue,
+        selectedItemColor: AppColors.cutSage,
         unselectedItemColor: AppColors.textMuted,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
@@ -82,7 +82,7 @@ abstract class AppTheme {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide:
-              const BorderSide(color: AppColors.cutBlueLight, width: 1.5),
+              const BorderSide(color: AppColors.cutSageLight, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -107,7 +107,7 @@ abstract class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.cutBlue,
+          backgroundColor: AppColors.cutSage,
           foregroundColor: Colors.white,
           elevation: 0,
           padding:
@@ -120,8 +120,8 @@ abstract class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.cutBlue,
-          side: const BorderSide(color: AppColors.cutBlue, width: 2),
+          foregroundColor: AppColors.cutSage,
+          side: const BorderSide(color: AppColors.cutSage, width: 2),
           padding:
               const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
@@ -131,7 +131,7 @@ abstract class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.cutBlueLight,
+          foregroundColor: AppColors.cutSage,
           textStyle: const TextStyle(
             fontFamily: 'Outfit',
             fontSize: 14,
@@ -141,7 +141,7 @@ abstract class AppTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.surface3,
-        selectedColor: AppColors.cutBlue,
+        selectedColor: AppColors.cutSage,
         labelStyle: AppTextStyles.labelLarge,
         side: const BorderSide(color: AppColors.border, width: 1.5),
         shape: RoundedRectangleBorder(
@@ -154,21 +154,21 @@ abstract class AppTheme {
         thickness: 1,
         space: 0,
       ),
-      tabBarTheme: const TabBarThemeData(
-        labelColor: AppColors.cutGold,
-        unselectedLabelColor: Colors.white54,
-        indicatorColor: AppColors.cutGold,
-        labelStyle: TextStyle(
-          fontFamily: 'Outfit',
-          fontSize: 13,
-          fontWeight: FontWeight.w700,
-        ),
-        unselectedLabelStyle: TextStyle(
-          fontFamily: 'Outfit',
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+   tabBarTheme: TabBarThemeData(
+  labelColor: AppColors.cutGold,
+  unselectedLabelColor: Colors.white54,
+  indicatorColor: AppColors.cutGold,
+  labelStyle: const TextStyle(
+    fontFamily: 'Outfit',
+    fontSize: 13,
+    fontWeight: FontWeight.w700,
+  ),
+  unselectedLabelStyle: const TextStyle(
+    fontFamily: 'Outfit',
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
+  ),
+),
       textTheme: const TextTheme(
         displayLarge: AppTextStyles.displayLarge,
         displayMedium: AppTextStyles.displayMedium,

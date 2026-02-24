@@ -178,7 +178,7 @@ class AppPrimaryButton extends StatelessWidget {
           boxShadow: enabled
               ? [
                   BoxShadow(
-                    color: AppColors.cutBlue.withOpacity(0.28),
+                    color: AppColors.cutSage.withOpacity(0.28),
                     blurRadius: 16,
                     offset: const Offset(0, 5),
                   ),
@@ -284,7 +284,7 @@ class AppOutlineButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = color ?? AppColors.cutBlue;
+    final c = color ?? AppColors.cutSage;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -419,7 +419,7 @@ class LoadingOverlay extends StatelessWidget {
             color: Colors.black26,
             child: const Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
+                valueColor: AlwaysStoppedAnimation(AppColors.cutSage),
               ),
             ),
           ),

@@ -41,14 +41,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             floating: true,
             snap: true,
             pinned: false,
-            backgroundColor: AppColors.cutBlue,
+            backgroundColor: AppColors.cutSage,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppColors.cutBlue, AppColors.cutBlueMid],
+                    colors: [AppColors.cutSage, AppColors.cutSageMid],
                   ),
                 ),
                 child: SafeArea(
@@ -158,7 +158,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 loading: () => const Center(
                   child: CircularProgressIndicator(
                     valueColor:
-                        AlwaysStoppedAnimation(AppColors.cutBlue),
+                        AlwaysStoppedAnimation(AppColors.cutSage),
                   ),
                 ),
                 error: (e, __) => Center(
@@ -172,7 +172,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push(AppRoutes.post),
-        backgroundColor: AppColors.cutBlue,
+        backgroundColor: AppColors.cutSage,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.add_rounded, color: Colors.white),
@@ -182,7 +182,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildTabs() {
     return Container(
-      color: AppColors.cutBlue,
+      color: AppColors.cutSage,
       child: Row(
         children: _tabs.map((tab) {
           final isActive = _activeTab == tab['id'];
@@ -264,7 +264,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const SizedBox(width: 8),
           _StatChip(
               label: '${items.length} Active',
-              color: AppColors.cutBlue,
+              color: AppColors.cutSage,
               bg: AppColors.surface3),
         ],
       ),
@@ -294,10 +294,10 @@ class _CategoryChip extends StatelessWidget {
         padding:
             const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.cutBlue : AppColors.surface3,
+          color: isActive ? AppColors.cutSage : AppColors.surface3,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isActive ? AppColors.cutBlue : AppColors.border,
+            color: isActive ? AppColors.cutSage : AppColors.border,
           ),
         ),
         child: Row(

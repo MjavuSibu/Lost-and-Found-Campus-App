@@ -37,7 +37,7 @@ class ProfileScreen extends ConsumerWidget {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
+            valueColor: AlwaysStoppedAnimation(AppColors.cutSage),
           ),
         ),
       );
@@ -50,7 +50,7 @@ class ProfileScreen extends ConsumerWidget {
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
-            backgroundColor: AppColors.cutBlue,
+            backgroundColor: AppColors.cutSage,
             actions: [
               IconButton(
                 icon: const Icon(Icons.logout_rounded),
@@ -98,7 +98,7 @@ class ProfileScreen extends ConsumerWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppColors.cutBlue, AppColors.cutBlueMid],
+                    colors: [AppColors.cutSage, AppColors.cutSageMid],
                   ),
                 ),
                 child: SafeArea(
@@ -168,7 +168,7 @@ class ProfileScreen extends ConsumerWidget {
                 child: Padding(
                   padding: EdgeInsets.all(32),
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
+                    valueColor: AlwaysStoppedAnimation(AppColors.cutSage),
                   ),
                 ),
               ),
@@ -218,7 +218,7 @@ class ProfileScreen extends ConsumerWidget {
               label: 'Posts',
               value: '$posted',
               icon: Icons.upload_rounded,
-              color: AppColors.cutBlue,
+              color: AppColors.cutSage,
               bg: AppColors.surface3,
             ),
           ),
@@ -279,7 +279,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget _infoRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppColors.cutBlue),
+        Icon(icon, size: 18, color: AppColors.cutSage),
         const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

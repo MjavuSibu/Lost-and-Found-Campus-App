@@ -91,7 +91,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       child: Row(
         children: [
           Text(text,
-              style: AppTextStyles.h3.copyWith(color: AppColors.cutBlue)),
+              style: AppTextStyles.h3.copyWith(color: AppColors.cutSage)),
           const SizedBox(width: 10),
           const Expanded(child: Divider()),
         ],
@@ -277,7 +277,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     height: 24,
                     child: Checkbox(
                       value: _agreedToTerms,
-                      activeColor: AppColors.cutBlue,
+                      activeColor: AppColors.cutSage,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),

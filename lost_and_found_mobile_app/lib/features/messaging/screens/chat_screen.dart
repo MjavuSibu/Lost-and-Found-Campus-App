@@ -212,7 +212,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   loading: () => const Center(
                     child: CircularProgressIndicator(
                       valueColor:
-                          AlwaysStoppedAnimation(AppColors.cutBlue),
+                          AlwaysStoppedAnimation(AppColors.cutSage),
                     ),
                   ),
                   error: (_, __) => Center(
@@ -317,7 +317,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.cutBlue.withOpacity(0.3),
+                    color: AppColors.cutSage.withOpacity(0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -402,7 +402,7 @@ class _MessageBubble extends StatelessWidget {
           maxWidth: MediaQuery.of(context).size.width * 0.72,
         ),
         decoration: BoxDecoration(
-          color: isMe ? AppColors.cutBlue : AppColors.surface,
+          color: isMe ? AppColors.cutSage : AppColors.surface,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(18),
             topRight: const Radius.circular(18),

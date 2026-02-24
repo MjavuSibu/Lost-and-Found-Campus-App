@@ -133,7 +133,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
       loading: () => const Scaffold(
         body: Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
+            valueColor: AlwaysStoppedAnimation(AppColors.cutSage),
           ),
         ),
       ),
@@ -168,7 +168,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
                   SliverAppBar(
                     expandedHeight: 220,
                     pinned: true,
-                    backgroundColor: AppColors.cutBlue,
+                    backgroundColor: AppColors.cutSage,
                     leading: IconButton(
                       icon: const Icon(Icons.arrow_back_rounded),
                       onPressed: () => context.pop(),
@@ -363,7 +363,7 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 18, color: AppColors.cutBlue),
+        Icon(icon, size: 18, color: AppColors.cutSage),
         const SizedBox(width: 10),
         Expanded(
           child: Column(
@@ -437,19 +437,19 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.cutBlue.withOpacity(0.06),
+                      color: AppColors.cutSage.withOpacity(0.06),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
                       children: [
                         const Icon(Icons.security_outlined,
-                            size: 16, color: AppColors.cutBlue),
+                            size: 16, color: AppColors.cutSage),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             'Your student number will be shared with the reporter.',
                             style: AppTextStyles.caption
-                                .copyWith(color: AppColors.cutBlue),
+                                .copyWith(color: AppColors.cutSage),
                           ),
                         ),
                       ],

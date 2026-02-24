@@ -57,7 +57,7 @@ class _PostItemScreenState extends ConsumerState<PostItemScreen> {
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
           colorScheme: const ColorScheme.light(
-            primary: AppColors.cutBlue,
+            primary: AppColors.cutSage,
           ),
         ),
         child: child!,
@@ -352,11 +352,11 @@ class _PostItemScreenState extends ConsumerState<PostItemScreen> {
             padding: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: isActive ? AppColors.cutBlue : AppColors.surface,
+              color: isActive ? AppColors.cutSage : AppColors.surface,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color:
-                    isActive ? AppColors.cutBlue : AppColors.border,
+                    isActive ? AppColors.cutSage : AppColors.border,
                 width: isActive ? 2 : 1.5,
               ),
             ),
@@ -394,7 +394,7 @@ class _PostItemScreenState extends ConsumerState<PostItemScreen> {
         children: [
           Text(text,
               style:
-                  AppTextStyles.h3.copyWith(color: AppColors.cutBlue)),
+                  AppTextStyles.h3.copyWith(color: AppColors.cutSage)),
           const SizedBox(width: 10),
           const Expanded(child: Divider()),
         ],

@@ -122,7 +122,7 @@ class NotificationsScreen extends ConsumerWidget {
       body: notificationsAsync.when(
         loading: () => const Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
+            valueColor: AlwaysStoppedAnimation(AppColors.cutSage),
           ),
         ),
         error: (_, __) => Center(
@@ -190,7 +190,7 @@ class _NotificationTile extends StatelessWidget {
   Color get _iconColor {
     switch (notification.type) {
       case 'claim':    return AppColors.cutGold;
-      case 'message':  return AppColors.cutBlue;
+      case 'message':  return AppColors.cutSage;
       case 'resolved': return AppColors.foundGreen;
       default:         return AppColors.textMuted;
     }
@@ -212,7 +212,7 @@ class _NotificationTile extends StatelessWidget {
       child: Container(
         color: notification.read
             ? Colors.transparent
-            : AppColors.cutBlue.withOpacity(0.04),
+            : AppColors.cutSage.withOpacity(0.04),
         padding: const EdgeInsets.symmetric(
             horizontal: 16, vertical: 14),
         child: Row(
@@ -249,7 +249,7 @@ class _NotificationTile extends StatelessWidget {
                           width: 8,
                           height: 8,
                           decoration: const BoxDecoration(
-                            color: AppColors.cutBlue,
+                            color: AppColors.cutSage,
                             shape: BoxShape.circle,
                           ),
                         ),

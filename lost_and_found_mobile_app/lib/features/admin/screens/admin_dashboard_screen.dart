@@ -161,7 +161,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         child: Text(
           label,
           style: AppTextStyles.labelLarge.copyWith(
-            color: isActive ? AppColors.cutBlue : AppColors.textMuted,
+            color: isActive ? AppColors.cutSage : AppColors.textMuted,
           ),
         ),
       ),
@@ -177,7 +177,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           child: itemsAsync.when(
             loading: () => const Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
+                valueColor: AlwaysStoppedAnimation(AppColors.cutSage),
               ),
             ),
             error: (e, __) => Center(
@@ -219,7 +219,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     return usersAsync.when(
       loading: () => const Center(
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
+          valueColor: AlwaysStoppedAnimation(AppColors.cutSage),
         ),
       ),
       error: (_, __) => Center(
@@ -275,7 +275,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           _SummaryCard(
               label: 'Resolved',
               value: '$resolved',
-              color: AppColors.cutBlue,
+              color: AppColors.cutSage,
               bg: AppColors.surface3),
         ],
       ),
@@ -305,10 +305,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
               margin: const EdgeInsets.only(right: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
               decoration: BoxDecoration(
-                color: isActive ? AppColors.cutBlue : AppColors.surface3,
+                color: isActive ? AppColors.cutSage : AppColors.surface3,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isActive ? AppColors.cutBlue : AppColors.border,
+                  color: isActive ? AppColors.cutSage : AppColors.border,
                 ),
               ),
               child: Text(
@@ -539,7 +539,7 @@ class _UserCard extends StatelessWidget {
             child: Text(
               'Confirm',
               style:
-                  AppTextStyles.labelLarge.copyWith(color: AppColors.cutBlue),
+                  AppTextStyles.labelLarge.copyWith(color: AppColors.cutSage),
             ),
           ),
         ],
@@ -632,7 +632,7 @@ class _UserCard extends StatelessWidget {
   Color _roleColor(String role) {
     switch (role) {
       case AppConstants.roleAdmin:
-        return AppColors.cutBlue;
+        return AppColors.cutSage;
       case AppConstants.roleSecurity:
         return AppColors.foundGreen;
       default:

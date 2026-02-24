@@ -116,7 +116,7 @@ class _NavItem extends StatelessWidget {
                 Icon(
                   isActive ? activeIcon : icon,
                   size: 24,
-                  color: isActive ? AppColors.cutBlue : AppColors.textMuted,
+                  color: isActive ? AppColors.cutSage : AppColors.textMuted,
                 ),
                 if (badgeCount > 0)
                   Positioned(
@@ -153,7 +153,7 @@ class _NavItem extends StatelessWidget {
                 fontFamily: 'Outfit',
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
-                color: isActive ? AppColors.cutBlue : AppColors.textMuted,
+                color: isActive ? AppColors.cutSage : AppColors.textMuted,
               ),
             ),
           ],
@@ -181,7 +181,7 @@ class _PostButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.cutBlue.withOpacity(0.35),
+                  color: AppColors.cutSage.withOpacity(0.35),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),

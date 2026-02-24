@@ -114,7 +114,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: _QuickLoginChip(
                 label: 'Admin',
                 icon: Icons.admin_panel_settings_outlined,
-                color: AppColors.cutBlue,
+                color: AppColors.cutSage,
                 bg: AppColors.surface3,
                 onTap: () {
                   _emailCtrl.text = 'admin@cut.ac.za';
@@ -154,7 +154,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.cutBlue, AppColors.cutBlueMid],
+                  colors: [AppColors.cutSage, AppColors.cutSageMid],
                 ),
               ),
               child: SafeArea(
@@ -222,18 +222,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          color: AppColors.cutBlue.withOpacity(0.07),
+                          color: AppColors.cutSage.withOpacity(0.07),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
                           children: [
                             const Icon(Icons.school_rounded,
-                                size: 16, color: AppColors.cutBlue),
+                                size: 16, color: AppColors.cutSage),
                             const SizedBox(width: 8),
                             Text(
                               'CUT students and staff only',
                               style: AppTextStyles.labelLarge
-                                  .copyWith(color: AppColors.cutBlue),
+                                  .copyWith(color: AppColors.cutSage),
                             ),
                           ],
                         ),

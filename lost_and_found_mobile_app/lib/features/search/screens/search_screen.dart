@@ -132,7 +132,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       loading: () => const Center(
                         child: CircularProgressIndicator(
                           valueColor:
-                              AlwaysStoppedAnimation(AppColors.cutBlue),
+                              AlwaysStoppedAnimation(AppColors.cutSage),
                         ),
                       ),
                       error: (_, __) => Center(
@@ -205,12 +205,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   horizontal: 14, vertical: 4),
               decoration: BoxDecoration(
                 color: isActive
-                    ? AppColors.cutBlue
+                    ? AppColors.cutSage
                     : AppColors.surface3,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: isActive
-                      ? AppColors.cutBlue
+                      ? AppColors.cutSage
                       : AppColors.border,
                 ),
               ),
@@ -254,10 +254,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         padding:
             const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.cutBlue : AppColors.surface3,
+          color: isActive ? AppColors.cutSage : AppColors.surface3,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isActive ? AppColors.cutBlue : AppColors.border,
+            color: isActive ? AppColors.cutSage : AppColors.border,
           ),
         ),
         child: Row(

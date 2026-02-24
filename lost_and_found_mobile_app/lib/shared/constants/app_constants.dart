@@ -116,7 +116,7 @@ extension ItemStatusDisplay on String {
   Color get statusColor {
     switch (this) {
       case AppConstants.statusOpen:     return AppColors.warning;
-      case AppConstants.statusClaimed:  return AppColors.cutBlueLight;
+      case AppConstants.statusClaimed:  return AppColors.cutSageLight;
       case AppConstants.statusResolved: return AppColors.foundGreen;
       case AppConstants.statusArchived: return AppColors.textMuted;
       default:                          return AppColors.textMuted;

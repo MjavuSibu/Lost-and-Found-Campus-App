@@ -27,7 +27,7 @@ class ConversationsScreen extends ConsumerWidget {
       body: conversationsAsync.when(
         loading: () => const Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
+            valueColor: AlwaysStoppedAnimation(AppColors.cutSage),
           ),
         ),
         error: (error, stack) {
@@ -130,7 +130,7 @@ class ConversationsScreen extends ConsumerWidget {
                     ? Container(
                         padding: const EdgeInsets.all(6),
                         decoration: const BoxDecoration(
-                          color: AppColors.cutBlue,
+                          color: AppColors.cutSage,
                           shape: BoxShape.circle,
                         ),
                         child: Text(

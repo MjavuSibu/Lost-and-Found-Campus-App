@@ -67,9 +67,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.cutBlue,
-              AppColors.cutBlueMid,
-              AppColors.cutBlueLight,
+              AppColors.cutSage,
+              AppColors.cutSageMid,
+              AppColors.cutSageLight,
             ],
             stops: [0.0, 0.55, 1.0],
           ),
