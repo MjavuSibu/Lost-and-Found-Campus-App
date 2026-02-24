@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import '../../../models/user_model.dart';
 
 import '../../../models/item_model.dart';
+import '../../../models/user_model.dart';
 import '../../../router/app_router.dart';
 import '../../../shared/constants/app_constants.dart';
 import '../../../shared/widgets/app_widgets.dart';
@@ -95,8 +95,8 @@ class _AdminDashboardScreenState
 
   @override
   Widget build(BuildContext context) {
-    final currentUser  = ref.watch(currentUserProvider).valueOrNull;
-    final itemsAsync   = ref.watch(_allItemsProvider);
+    final currentUser = ref.watch(currentUserProvider).valueOrNull;
+    final itemsAsync  = ref.watch(_allItemsProvider);
 
     if (currentUser == null || !currentUser.isAdmin) {
       return Scaffold(
@@ -123,54 +123,140 @@ class _AdminDashboardScreenState
       ),
       body: Column(
         children: [
-          _buildSummaryRow(itemsAsync.valueOrNull ?? []),
-          _buildStatusFilter(),
+          _buildTabBar(),
           Expanded(
-            child: itemsAsync.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                      AlwaysStoppedAnimation(AppColors.cutBlue),
-                ),
-              ),
-              error: (_, __) => Center(
-                child: Text('Something went wrong.',
-                    style: AppTextStyles.bodyMedium),
-              ),
-              data: (items) {
-                final filtered = _filterStatus == 'all'
-                    ? items
-                    : items
-                        .where((i) => i.status == _filterStatus)
-                        .toList();
-
-                if (filtered.isEmpty) {
-                  return EmptyState(
-                    icon: Icons.inbox_outlined,
-                    title: 'No items',
-                    subtitle: 'No items match this filter.',
-                  );
-                }
-
-                return ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
-                  itemCount: filtered.length,
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(height: 10),
-                  itemBuilder: (context, i) => _AdminItemCard(
-                    item: filtered[i],
-                    onStatusChange: (status) =>
-                        _updateStatus(filtered[i].itemId, status),
-                    onDelete: () => _deleteItem(filtered[i].itemId),
-                    onTap: () => context.push(
-                        AppRoutes.toItemDetail(filtered[i].itemId)),
-                  ),
-                );
-              },
-            ),
+            child: _selectedTab == 0
+                ? _buildItemsTab(itemsAsync)
+                : _buildUsersTab(),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTabBar() {
+    return Container(
+      color: AppColors.surface,
+      child: Row(
+        children: [
+          _tab('Items', 0),
+          _tab('Users', 1),
+        ],
+      ),
+    );
+  }
+
+  Widget _tab(String label, int index) {
+    final isActive = _selectedTab == index;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedTab = index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: 24, vertical: 14),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: isActive
+                  ? AppColors.cutGold
+                  : Colors.transparent,
+              width: 3,
+            ),
+          ),
+        ),
+        child: Text(
+          label,
+          style: AppTextStyles.labelLarge.copyWith(
+            color: isActive
+                ? AppColors.cutBlue
+                : AppColors.textMuted,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildItemsTab(AsyncValue<List<ItemModel>> itemsAsync) {
+    return Column(
+      children: [
+        _buildSummaryRow(itemsAsync.valueOrNull ?? []),
+        _buildStatusFilter(),
+        Expanded(
+          child: itemsAsync.when(
+            loading: () => const Center(
+              child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation(AppColors.cutBlue),
+              ),
+            ),
+            error: (_, __) => Center(
+              child: Text('Something went wrong.',
+                  style: AppTextStyles.bodyMedium),
+            ),
+            data: (items) {
+              final filtered = _filterStatus == 'all'
+                  ? items
+                  : items
+                      .where((i) => i.status == _filterStatus)
+                      .toList();
+              if (filtered.isEmpty) {
+                return EmptyState(
+                  icon: Icons.inbox_outlined,
+                  title: 'No items',
+                  subtitle: 'No items match this filter.',
+                );
+              }
+              return ListView.separated(
+                padding:
+                    const EdgeInsets.fromLTRB(16, 8, 16, 40),
+                itemCount: filtered.length,
+                separatorBuilder: (_, __) =>
+                    const SizedBox(height: 10),
+                itemBuilder: (context, i) => _AdminItemCard(
+                  item: filtered[i],
+                  onStatusChange: (status) =>
+                      _updateStatus(filtered[i].itemId, status),
+                  onDelete: () =>
+                      _deleteItem(filtered[i].itemId),
+                  onTap: () => context.push(
+                      AppRoutes.toItemDetail(filtered[i].itemId)),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUsersTab() {
+    final usersAsync = ref.watch(_allUsersProvider);
+    return usersAsync.when(
+      loading: () => const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation(AppColors.cutBlue),
+        ),
+      ),
+      error: (_, __) => Center(
+        child: Text('Something went wrong.',
+            style: AppTextStyles.bodyMedium),
+      ),
+      data: (users) {
+        if (users.isEmpty) {
+          return EmptyState(
+            icon: Icons.people_outline_rounded,
+            title: 'No users found',
+            subtitle: 'Registered users will appear here.',
+          );
+        }
+        return ListView.separated(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
+          itemCount: users.length,
+          separatorBuilder: (_, __) =>
+              const SizedBox(height: 10),
+          itemBuilder: (context, i) =>
+              _UserCard(user: users[i]),
+        );
+      },
     );
   }
 
@@ -231,7 +317,8 @@ class _AdminDashboardScreenState
         children: filters.map((f) {
           final isActive = _filterStatus == f['id'];
           return GestureDetector(
-            onTap: () => setState(() => _filterStatus = f['id']!),
+            onTap: () =>
+                setState(() => _filterStatus = f['id']!),
             child: Container(
               margin: const EdgeInsets.only(right: 8),
               padding: const EdgeInsets.symmetric(
@@ -396,8 +483,7 @@ class _AdminItemCard extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               border: Border(
-                top: BorderSide(color: AppColors.border),
-              ),
+                  top: BorderSide(color: AppColors.border)),
             ),
             child: Row(
               children: [
@@ -463,5 +549,143 @@ class _AdminItemCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _UserCard extends StatelessWidget {
+  final UserModel user;
+  const _UserCard({required this.user});
+
+  Future<void> _changeRole(
+      BuildContext context, String newRole) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text('Change Role', style: AppTextStyles.h2),
+        content: Text(
+          'Change ${user.displayName} to $newRole?',
+          style: AppTextStyles.bodyMedium,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              'Confirm',
+              style: AppTextStyles.labelLarge
+                  .copyWith(color: AppColors.cutBlue),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await FirebaseFirestore.instance
+          .collection(AppConstants.colUsers)
+          .doc(user.userId)
+          .update({'role': newRole});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          UserAvatar(initials: user.initials, size: 48),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(user.displayName, style: AppTextStyles.h3),
+                const SizedBox(height: 2),
+                Text(user.email, style: AppTextStyles.caption),
+                const SizedBox(height: 4),
+                Text(
+                  'Student No: ${user.studentNumber}',
+                  style: AppTextStyles.caption,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          PopupMenuButton<String>(
+            onSelected: (role) => _changeRole(context, role),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: _roleBg(user.role),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                    color: _roleColor(user.role)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    user.role[0].toUpperCase() +
+                        user.role.substring(1),
+                    style: AppTextStyles.labelMedium.copyWith(
+                      color: _roleColor(user.role),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.arrow_drop_down_rounded,
+                      size: 16,
+                      color: _roleColor(user.role)),
+                ],
+              ),
+            ),
+            itemBuilder: (_) => [
+              AppConstants.roleStudent,
+              AppConstants.roleAdmin,
+              AppConstants.roleSecurity,
+            ]
+                .where((r) => r != user.role)
+                .map((r) => PopupMenuItem(
+                      value: r,
+                      child: Text(
+                        r[0].toUpperCase() + r.substring(1),
+                        style: AppTextStyles.bodyMedium,
+                      ),
+                    ))
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _roleColor(String role) {
+    switch (role) {
+      case AppConstants.roleAdmin:    return AppColors.cutBlue;
+      case AppConstants.roleSecurity: return AppColors.foundGreen;
+      default:                        return AppColors.textSecondary;
+    }
+  }
+
+  Color _roleBg(String role) {
+    switch (role) {
+      case AppConstants.roleAdmin:    return AppColors.surface3;
+      case AppConstants.roleSecurity: return AppColors.foundGreenBg;
+      default:                        return AppColors.surface3;
+    }
   }
 }
