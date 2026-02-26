@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'dart:convert';
 
 import '../../../models/item_model.dart';
 import '../../../router/app_router.dart';
@@ -236,6 +237,10 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
                           const SizedBox(height: 12),
                           Text(item.title, style: AppTextStyles.displayMedium),
                           const SizedBox(height: 16),
+                          if (item.hasPhotos) ...[
+                            _buildPhotoGallery(item.photoUrls),
+                            const SizedBox(height: 16),
+                          ],
                           _reporterCard(item),
                           const SizedBox(height: 20),
                           _infoRow(
@@ -329,6 +334,36 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
     );
   }
 
+Widget _buildPhotoGallery(List<String> urls) {
+    if (urls.length == 1) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Image.memory(
+          base64Decode(urls.first),
+          width: double.infinity,
+          height: 220,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+    return SizedBox(
+      height: 200,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: urls.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemBuilder: (context, i) => ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Image.memory(
+            base64Decode(urls[i]),
+            width: 200,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
   Widget _reporterCard(ItemModel item) {
     return Container(
       padding: const EdgeInsets.all(14),
@@ -491,3 +526,4 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
     return name.isNotEmpty ? name[0].toUpperCase() : '?';
   }
 }
+

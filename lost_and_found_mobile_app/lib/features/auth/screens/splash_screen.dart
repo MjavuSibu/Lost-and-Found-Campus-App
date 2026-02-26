@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../../router/app_router.dart';
 import '../../../theme/app_colors.dart';
@@ -16,121 +17,104 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _fadeAnim;
-  late final Animation<double> _scaleAnim;
-  bool _redirected = false;
+  late VideoPlayerController _videoController;
+  late AnimationController _buttonController;
+  late Animation<double> _buttonFade;
+  bool _videoReady = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+
+    _buttonController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 800),
     );
-    _fadeAnim = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-    _scaleAnim = Tween<double>(begin: 0.85, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    _buttonFade = CurvedAnimation(
+      parent: _buttonController,
+      curve: Curves.easeIn,
     );
-    _controller.forward();
+
+    _videoController = VideoPlayerController.asset(
+      'assets/videos/logo.mp4',
+    )..initialize().then((_) {
+        if (!mounted) return;
+        setState(() => _videoReady = true);
+        _videoController.setLooping(true);
+        _videoController.setVolume(0);
+        _videoController.play();
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) _buttonController.forward();
+        });
+      });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _videoController.dispose();
+    _buttonController.dispose();
     super.dispose();
   }
 
-  void _redirect(BuildContext context, bool loggedIn) {
-    if (_redirected) return;
-    _redirected = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      context.go(loggedIn ? AppRoutes.home : AppRoutes.login);
-    });
+  void _getStarted() {
+    final loggedIn =
+        ref.read(authStateProvider).valueOrNull != null;
+    if (loggedIn) {
+      context.go(AppRoutes.home);
+    } else {
+      context.go(AppRoutes.login);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authStateProvider);
-
-    authState.when(
-      data: (user) => _redirect(context, user != null),
-      loading: () {},
-      error: (_, __) => _redirect(context, false),
-    );
-
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.cutSage,
-              AppColors.cutSageMid,
-              AppColors.cutSageLight,
-            ],
-            stops: [0.0, 0.55, 1.0],
-          ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: FadeTransition(
-              opacity: _fadeAnim,
-              child: ScaleTransition(
-                scale: _scaleAnim,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 88,
-                      height: 88,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(26),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.25),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.search_rounded,
-                        size: 48,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'CUT Lost & Found',
-                      style: AppTextStyles.displayLarge.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Central University of Technology',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: Colors.white.withOpacity(0.65),
-                      ),
-                    ),
-                    const SizedBox(height: 48),
-                    SizedBox(
-                      width: 28,
-                      height: 28,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Center(
+                child: _videoReady
+                    ? AspectRatio(
+                        aspectRatio:
+                            _videoController.value.aspectRatio,
+                        child: VideoPlayer(_videoController),
+                      )
+                    : const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(
-                          Colors.white.withOpacity(0.6),
+                            AppColors.cutSage),
+                      ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
+              child: FadeTransition(
+                opacity: _buttonFade,
+                child: GestureDetector(
+                  onTap: _getStarted,
+                  child: Container(
+                    width: double.infinity,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: AppColors.cutSageDark,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Get Started',
+                        style: AppTextStyles.buttonLarge.copyWith(
+                          color: Colors.white,
+                          fontSize: 16,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

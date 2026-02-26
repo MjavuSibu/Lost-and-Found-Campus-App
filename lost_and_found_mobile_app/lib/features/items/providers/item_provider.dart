@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../../models/item_model.dart';
 import '../../../shared/constants/app_constants.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -12,6 +11,13 @@ class ItemNotifier extends StateNotifier<AsyncValue<void>> {
   final Ref ref;
   final _firestore = FirebaseFirestore.instance;
   final _uuid = const Uuid();
+
+  Future<void> updatePhotos(String itemId, List<String> urls) async {
+    await _firestore
+        .collection(AppConstants.colItems)
+        .doc(itemId)
+        .update({'photoUrls': urls});
+  }
 
   Future<String> submitItem({
     required String type,

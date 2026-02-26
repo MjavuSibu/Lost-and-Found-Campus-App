@@ -50,8 +50,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           state.matchedLocation == AppRoutes.splash;
 
       if (!loggedIn && !onAuthScreen) return AppRoutes.login;
-      if (loggedIn && onAuthScreen &&
-          state.matchedLocation != AppRoutes.splash) {
+      if (loggedIn && state.matchedLocation == AppRoutes.login) {
+        return AppRoutes.home;
+      }
+      if (loggedIn && state.matchedLocation == AppRoutes.register) {
         return AppRoutes.home;
       }
       return null;

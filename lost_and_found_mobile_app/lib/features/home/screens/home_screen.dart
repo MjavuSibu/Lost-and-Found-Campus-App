@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'dart:convert';
 
 import '../../../models/item_model.dart';
 import '../../../router/app_router.dart';
@@ -378,22 +379,32 @@ class _ItemCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: item.isLost
-                      ? AppColors.lostRedBg
-                      : AppColors.foundGreenBg,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(
-                  cat.icon,
-                  size: 26,
-                  color: item.isLost
-                      ? AppColors.lostRed
-                      : AppColors.foundGreen,
-                ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: item.hasPhotos
+                    ? Image.memory(
+                        base64Decode(item.photoUrls.first),
+                        width: 52,
+                        height: 52,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: item.isLost
+                              ? AppColors.lostRedBg
+                              : AppColors.foundGreenBg,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(
+                          cat.icon,
+                          size: 26,
+                          color: item.isLost
+                              ? AppColors.lostRed
+                              : AppColors.foundGreen,
+                        ),
+                      ),
               ),
               const SizedBox(width: 12),
               Expanded(
