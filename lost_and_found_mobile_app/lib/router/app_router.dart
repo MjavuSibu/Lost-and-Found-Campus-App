@@ -43,19 +43,20 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: AppRoutes.splash,
     debugLogDiagnostics: false,
     redirect: (BuildContext context, GoRouterState state) {
-      final loggedIn = authState.valueOrNull != null;
-      final onAuthScreen =
-          state.matchedLocation == AppRoutes.login ||
-          state.matchedLocation == AppRoutes.register ||
-          state.matchedLocation == AppRoutes.splash;
+      final loggedIn    = authState.valueOrNull != null;
+      final onSplash    = state.matchedLocation == AppRoutes.splash;
+      final onLogin     = state.matchedLocation == AppRoutes.login;
+      final onRegister  = state.matchedLocation == AppRoutes.register;
 
-      if (!loggedIn && !onAuthScreen) return AppRoutes.login;
-      if (loggedIn && state.matchedLocation == AppRoutes.login) {
-        return AppRoutes.home;
-      }
-      if (loggedIn && state.matchedLocation == AppRoutes.register) {
-        return AppRoutes.home;
-      }
+      // Always allow splash — navigation handled by button
+      if (onSplash) return null;
+
+      // Not logged in — send to login
+      if (!loggedIn && !onLogin && !onRegister) return AppRoutes.login;
+
+      // Logged in but on login or register — send to home
+      if (loggedIn && (onLogin || onRegister)) return AppRoutes.home;
+
       return null;
     },
     routes: [
