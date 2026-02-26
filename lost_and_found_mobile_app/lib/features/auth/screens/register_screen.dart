@@ -121,7 +121,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   style: AppTextStyles.displayMedium),
               const SizedBox(height: 6),
               Text(
-                'Register with your CUT credentials to report and recover lost items.',
+                'Register with your credentials to report and recover lost items.',
                 style: AppTextStyles.bodyMedium,
               ),
               const SizedBox(height: 28),

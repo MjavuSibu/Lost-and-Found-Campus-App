@@ -231,7 +231,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 size: 16, color: AppColors.cutSage),
                             const SizedBox(width: 8),
                             Text(
-                              'CUT students and staff only',
+                              'Students and staff only',
                               style: AppTextStyles.labelLarge
                                   .copyWith(color: AppColors.cutSage),
                             ),
