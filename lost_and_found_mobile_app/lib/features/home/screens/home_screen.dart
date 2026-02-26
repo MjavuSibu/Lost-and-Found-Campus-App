@@ -73,7 +73,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
-                                'CUT Lost & Found',
+                                'Lost & Found Campus App',
                                 style: AppTextStyles.h1
                                     .copyWith(color: Colors.white),
                               ),
