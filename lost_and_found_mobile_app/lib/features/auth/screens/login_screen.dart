@@ -191,7 +191,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Sign in to CUT Lost & Found',
+                        'Sign in to the Campus Lost & Found',
                         style: AppTextStyles.bodyLarge.copyWith(
                           color: Colors.white.withOpacity(0.7),
                         ),
